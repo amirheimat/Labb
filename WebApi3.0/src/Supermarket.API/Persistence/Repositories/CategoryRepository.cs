@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Supermarket.API.Domain.Models;
 using Supermarket.API.Domain.Repositories;
 using Supermarket.API.Persistence.Contexts;

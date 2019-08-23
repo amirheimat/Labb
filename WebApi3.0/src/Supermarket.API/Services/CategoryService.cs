@@ -22,17 +22,18 @@ namespace Supermarket.API.Services
 
         }
 
-        public async Task<Category> GetCategoryByIndex(int index)
+        public async Task<Category> GetCategoryByIndex(Index index)
         {
             var categories = await _categoryRepository.ListAsync();
-            return categories.ToList()[index];
+            return categories.ToList()[];
         }
 
         public async Task<IEnumerable<Category>> GetCategoryByRange(int start, int end)
         {
             var categories = await _categoryRepository.ListAsync();
-            return categories.ToList().GetRange(start, end-start+1);       
+            return categories.ToList().GetRange(start, end - start + 1);
         }
+
 
         public async Task<CategoryResponse> DeleteAsync(int id)
         {

@@ -34,6 +34,7 @@ namespace Supermarket.API.Controllers
             return resources;
         }
 
+
         [HttpGet("{index}")]
         public async Task<CategoryResource> GetIndex(int index)
         {
@@ -80,7 +81,18 @@ namespace Supermarket.API.Controllers
             var jsonString = JsonConvert.SerializeObject(resource);
             var backToResource = JsonConvert.DeserializeObject<SaveCategoryResource>(jsonString);
             stopwatch.Stop();
-            Console.WriteLine("Time elapsed for old Json: {0:hh\\:mm\\:ss}", stopwatch.Elapsed);            
+            Console.WriteLine($"Time elapsed for old Json: {stopwatch.ElapsedMilliseconds}ms");
+
+
+
+            Stopwatch stopwatch2 = new Stopwatch();
+            stopwatch2.Start();
+            var jsonString2 = System.Text.Json.JsonSerializer.Serialize(resource);
+            var backtoResource2 = System.Text.Json.JsonSerializer.Deserialize<SaveCategoryResource>(jsonString2);
+            stopwatch2.Stop();
+            Console.WriteLine($"Time elapsed for new Json: {stopwatch2.ElapsedMilliseconds}ms");
+
+
 
             var category = _mapper.Map<SaveCategoryResource, Category>(resource);
             var result = await _categoryService.UpdateAsync(id, category);
