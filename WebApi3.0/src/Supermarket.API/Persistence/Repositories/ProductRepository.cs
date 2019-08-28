@@ -21,6 +21,15 @@ namespace Supermarket.API.Persistence.Repositories
                                           .ToListAsync();
         }
 
+        public async IAsyncEnumerable<Product> ListNewAsync()
+        {
+            await foreach (var product in _context.Products)
+            {
+                await Task.Delay(1000);
+                yield return product;
+            }
+        }
+
         public async Task<Product> FindByIdAsync(int id)
         {
             return await _context.Products.FindAsync(id);
@@ -39,6 +48,11 @@ namespace Supermarket.API.Persistence.Repositories
         public void Remove(Product product)
         {
             _context.Products.Remove(product);
+        }
+
+        public async Task AddPhoneAsync(Phone phone)
+        {
+            await _context.Phones.AddAsync(phone);
         }
     }
 }

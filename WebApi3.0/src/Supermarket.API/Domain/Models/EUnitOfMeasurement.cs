@@ -18,5 +18,6 @@ namespace Supermarket.API.Domain.Models
 
         [Description("L")]
         Liter = 5
+
     }
 }

@@ -1,0 +1,49 @@
+﻿@page "/products"
+
+@using BlazorApp1.Data
+@inject ProductsService ProductService
+
+
+
+<h3>Products</h3>
+@if (products == null)
+{
+<p><em>Loading...</em></p>
+}
+else
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Unit</th>
+            <th>Category</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in products)
+        {
+            <tr>
+                <td>@product.name</td>
+                <td>@product.quantityInPackage</td>
+                <td>@product.unitOfMeasurement</td>
+                <td>@product.category.name</td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+
+
+
+
+
+@code {
+    List<Product> products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductService.GetProducts();
+    }
+}

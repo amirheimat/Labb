@@ -34,22 +34,21 @@ namespace Supermarket.API.Controllers
             return resources;
         }
 
-        [HttpGet("{index}")]
-        public async Task<CategoryResource> GetIndex(int index)
-        {
-            var category = await _categoryService.GetCategoryByIndex(index);
-            var resource = _mapper.Map<Category, CategoryResource>(category);
-            return resource;
-        }
+        //[HttpGet("{index}")]
+        //public async Task<CategoryResource> GetIndex(int index)
+        //{
+        //    var category = await _categoryService.GetCategoryByIndex(index);
+        //    var resource = _mapper.Map<Category, CategoryResource>(category);
+        //    return resource;
+        //}
 
-        [HttpGet("{start}/{end}")]
-        public async Task<IEnumerable<CategoryResource>> GetRange(int start, int end)
-        {
-            var categories = await _categoryService.GetCategoryByRange(start, end);
-            var resources = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResource>>(categories);
-            return resources;
-        }
-
+        //[HttpGet("{start}/{end}")]
+        //public async Task<IEnumerable<CategoryResource>> GetRange(int start, int end)
+        //{
+        //    var categories = await _categoryService.GetCategoryByRange(start, end);
+        //    var resources = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResource>>(categories);
+        //    return resources;
+        //}
 
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] SaveCategoryResource resource)

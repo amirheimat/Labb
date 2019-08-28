@@ -13,12 +13,12 @@ using Supermarket.API.Resources;
 
 namespace Supermarket.API.Controllers
 {
-    [Route("api/[controller]")]
+
+    [Route("api/[controller]/[action]")]
     public class CategoriesController : Controller
     {
         private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
-
 
         public CategoriesController(ICategoryService categoryService, IMapper mapper)
         {
@@ -27,32 +27,35 @@ namespace Supermarket.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<CategoryResource>> GetAllAsync()
+        [ActionName("GetAll")]
+        public async Task<IEnumerable<CategoryResource>> GetAll()
         {
             var categories = await _categoryService.ListAsync();
             var resources = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResource>>(categories);
             return resources;
         }
 
-
-        [HttpGet("{index}")]
-        public async Task<CategoryResource> GetIndex(int index)
+        [HttpGet("{index}/{fromEnd=false}")]
+        [ActionName("GetIndex")]
+        public async Task<CategoryResource> GetIndex(int index, bool fromEnd)
         {
-            var category = await _categoryService.GetCategoryByIndex(index);
+            var category = await _categoryService.ListIndexAsync(index, fromEnd);
+
             var resource = _mapper.Map<Category, CategoryResource>(category);
             return resource;
         }
 
         [HttpGet("{start}/{end}")]
+        [ActionName("GetRange")]
         public async Task<IEnumerable<CategoryResource>> GetRange(int start, int end)
         {
-            var categories = await _categoryService.GetCategoryByRange(start, end);
+            var categories = await _categoryService.ListRangeAsync(start, end);
             var resources = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResource>>(categories);
             return resources;
         }
 
-
         [HttpPost]
+        [ActionName("PostAsync")]
         public async Task<IActionResult> PostAsync([FromBody] SaveCategoryResource resource)
         {
             if (!ModelState.IsValid)
@@ -69,30 +72,11 @@ namespace Supermarket.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [ActionName("PutAsync")]
         public async Task<IActionResult> PutAsync(int id, [FromBody] SaveCategoryResource resource)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState.GetErrorMessages());
-
-
-            //Json example.
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            var jsonString = JsonConvert.SerializeObject(resource);
-            var backToResource = JsonConvert.DeserializeObject<SaveCategoryResource>(jsonString);
-            stopwatch.Stop();
-            Console.WriteLine($"Time elapsed for old Json: {stopwatch.ElapsedMilliseconds}ms");
-
-
-
-            Stopwatch stopwatch2 = new Stopwatch();
-            stopwatch2.Start();
-            var jsonString2 = System.Text.Json.JsonSerializer.Serialize(resource);
-            var backtoResource2 = System.Text.Json.JsonSerializer.Deserialize<SaveCategoryResource>(jsonString2);
-            stopwatch2.Stop();
-            Console.WriteLine($"Time elapsed for new Json: {stopwatch2.ElapsedMilliseconds}ms");
-
-
 
             var category = _mapper.Map<SaveCategoryResource, Category>(resource);
             var result = await _categoryService.UpdateAsync(id, category);
@@ -105,6 +89,7 @@ namespace Supermarket.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ActionName("DeleteAsync")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
             var result = await _categoryService.DeleteAsync(id);

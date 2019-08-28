@@ -14,26 +14,30 @@ namespace Supermarket.API.Services
         private readonly ICategoryRepository _categoryRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-
         public CategoryService(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
         {
             _categoryRepository = categoryRepository;
             _unitOfWork = unitOfWork;
-
         }
 
-        public async Task<Category> GetCategoryByIndex(Index index)
+        public async Task<IEnumerable<Category>> ListAsync()
+        {
+            return await _categoryRepository.ListAsync();
+        }
+
+        public async Task<Category> ListIndexAsync(int index, bool fromEnd)
+        {
+            Index i = fromEnd ? ^index : index;
+
+            var categories = await _categoryRepository.ListAsync();
+            return categories.ToArray()[i];
+        }
+
+        public async Task<IEnumerable<Category>> ListRangeAsync(Index start, Index end)
         {
             var categories = await _categoryRepository.ListAsync();
-            return categories.ToList()[];
+            return categories.ToArray()[start..end];
         }
-
-        public async Task<IEnumerable<Category>> GetCategoryByRange(int start, int end)
-        {
-            var categories = await _categoryRepository.ListAsync();
-            return categories.ToList().GetRange(start, end - start + 1);
-        }
-
 
         public async Task<CategoryResponse> DeleteAsync(int id)
         {
@@ -54,11 +58,6 @@ namespace Supermarket.API.Services
                 // Do some logging stuff
                 return new CategoryResponse($"An error occurred when deleting the category: {ex.Message}");
             }
-        }
-
-        public async Task<IEnumerable<Category>> ListAsync()
-        {
-            return await _categoryRepository.ListAsync();
         }
 
         public async Task<CategoryResponse> SaveAsync(Category category)
